@@ -11,6 +11,7 @@ import ca.wacos.nametagedit.tasks.SQLDataTask;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -36,7 +37,7 @@ public class NametagHandler {
     private final boolean tabListDisabled;
 
     // Stores all group names in order
-    private List<String> allGroups = new ArrayList<>();
+    private List<String> allGroups = new LinkedList<>();
 
     // Stores all group names to permissions/prefix/suffix
     private HashMap<String, GroupData> groupData = new HashMap<>();
