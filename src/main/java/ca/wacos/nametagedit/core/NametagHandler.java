@@ -124,6 +124,9 @@ public class NametagHandler {
         for (int t = 0; t < str.length() && t < 16; t++) {
             tab += str.charAt(t);
         }
+        if(p.getPlayerListName().equals(tab)){
+            return; // Do nothing, it's the same
+        }
         p.setPlayerListName(tab);
     }
 
@@ -162,6 +165,7 @@ public class NametagHandler {
 
         allGroups.clear();
         allGroups = groupsFile.getStringList("Order");
+        Collections.reverse(allGroups);
 
         for (String s : allGroups) {
             GroupData data = new GroupData();
@@ -188,32 +192,7 @@ public class NametagHandler {
             if (p == null) {
                 continue;
             }
-
-            NametagManager.clear(p.getName());
-
-            String uuid = p.getUniqueId().toString();
-
-            if (playerData.containsKey(uuid)) {
-                PlayerData data = playerData.get(uuid);
-                NametagManager.overlap(p.getName(), format(data.getPrefix()), format(data.getSuffix()));
-            } else {
-                Permission perm = null;
-
-                for (String s : allGroups) {
-                    GroupData data = groupData.get(s);
-
-                    perm = new Permission(data.getPermission(), PermissionDefault.FALSE);
-
-                    if (p.hasPermission(perm)) {
-                        NametagCommand.setNametagSoft(p.getName(), format(data.getPrefix()), format(data.getSuffix()), NametagChangeReason.GROUP_NODE);
-                        break;
-                    }
-                }
-            }
-
-            if (tabListDisabled) {
-                setBlankTag(p);
-            }
+            applyTagToPlayer(p);
         }
     }
 
@@ -224,16 +203,17 @@ public class NametagHandler {
         NametagManager.clear(p.getName());
 
         if (playerData.containsKey(uuid)) {
+            plugin.debug("Found user info for " + p.getName());
             PlayerData data = playerData.get(uuid);
             NametagManager.overlap(p.getName(), format(data.getPrefix()), format(data.getSuffix()));
         } else {
-            Permission perm = null;
-
+            Permission perm;
+            plugin.debug("Didn't find user data, checking perm nodes for " + p.getName() + " in groups " + allGroups);
             for (String s : allGroups) {
                 GroupData data = groupData.get(s);
 
                 perm = new Permission(data.getPermission(), PermissionDefault.FALSE);
-
+                plugin.debug(p.getName() + " perm check for " + data.getPermission() + ": " + p.hasPermission(perm));
                 if (p.hasPermission(perm)) {
                     NametagCommand.setNametagSoft(p.getName(), format(data.getPrefix()), format(data.getSuffix()), NametagChangeReason.GROUP_NODE);
                     break;

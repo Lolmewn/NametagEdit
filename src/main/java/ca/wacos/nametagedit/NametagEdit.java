@@ -140,4 +140,8 @@ public class NametagEdit extends JavaPlugin {
         connectionPool.addDataSourceProperty("user", username);
         connectionPool.addDataSourceProperty("password", password);
     }
+
+    public void debug(String message) {
+        this.getLogger().info("[DEBUG]" + message);
+    }
 }
